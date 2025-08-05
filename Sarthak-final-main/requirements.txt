@@ -1,4 +1,5 @@
 Flask
 Flask-SQLAlchemy
 pandas
-openpyxl 
+openpyxl
+xhtml2pdf 

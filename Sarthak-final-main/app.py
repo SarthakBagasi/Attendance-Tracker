@@ -434,31 +434,7 @@ def exception_details(exception_id):
     
     return render_template('exception_details.html', exception=exception)
 
-@app.route('/bulk_update_exceptions', methods=['POST'])
-@admin_required
-def bulk_update_exceptions():
-    exception_ids = request.form.getlist('exception_ids')
-    action = request.form.get('bulk_action')
-    
-    if not exception_ids:
-        flash('No discrepancies selected.', 'warning')
-        return redirect(url_for('view_exceptions'))
-    
-    count = 0
-    for exception_id in exception_ids:
-        exception = ExceptionReport.query.get(exception_id)
-        if exception:
-            if action == 'process':
-                exception.status = 'processed'
-            elif action == 'resolve':
-                exception.status = 'resolved'
-            elif action == 'reopen':
-                exception.status = 'pending'
-            count += 1
-    
-    db.session.commit()
-    flash(f'{count} discrepancies updated successfully.', 'success')
-    return redirect(url_for('view_exceptions'))
+
 
 @app.route('/export_exceptions_excel')
 def export_exceptions_excel():
@@ -479,7 +455,7 @@ def export_exceptions_excel():
     ).order_by(ExceptionReport.date, Employee.name).all()
     
     data = [{
-        'Date': exception.date,
+        'Date': exception.date.strftime('%Y-%m-%d'),
         'Employee': emp.name,
         'Issue': exception.issue,
         'Status': exception.status.title(),
@@ -806,7 +782,7 @@ def export_reports_pdf():
 def export_attendance_excel():
     attendance = db.session.query(Attendance, Employee).join(Employee, Attendance.employee_id==Employee.id).order_by(Attendance.date.desc()).all()
     data = [{
-        'Date': att.date,
+        'Date': att.date.strftime('%Y-%m-%d'),
         'Employee': emp.name,
         'Employee ID': emp.emp_id,
         'Status': att.status,
@@ -1167,12 +1143,12 @@ def export_rota_excel():
     ).order_by(ShiftRota.date, Employee.name).all()
     
     data = [{
-        'Date': rota.date,
+        'Date': rota.date.strftime('%Y-%m-%d'),
         'Employee': emp.name,
         'Employee ID': emp.emp_id,
         'Shift': shift.description,
         'Shift Code': shift.code,
-        'Start Time': SHIFT_START.get(shift.code, 'N/A'),
+        'Start Time': SHIFT_START.get(shift.code, 'N/A').strftime('%H:%M') if isinstance(SHIFT_START.get(shift.code, 'N/A'), time) else 'N/A',
         'Department': emp.department or 'N/A'
     } for rota, emp, shift in rotas]
     

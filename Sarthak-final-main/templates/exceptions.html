@@ -753,7 +753,7 @@
             {% if not is_admin_logged_in() %}
             <div class="alert alert-info mt-3" role="alert">
                 <i class="fas fa-info-circle me-2"></i>
-                <strong>Admin Access:</strong> For full administrative features including bulk actions and detailed management, 
+                <strong>Admin Access:</strong> For full administrative features and detailed management, 
                 <a href="/admin/login" class="alert-link">login as admin</a> (Password: admin123)
                 <br><small><a href="/debug-session" class="alert-link">Debug Session Info</a></small>
             </div>
@@ -889,11 +889,6 @@
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            {% if is_admin_logged_in() %}
-                            <th>
-                                <input type="checkbox" id="selectAll" class="form-check-input">
-                            </th>
-                            {% endif %}
                             <th><i class="fas fa-calendar me-1"></i>Date</th>
                             <th><i class="fas fa-user me-1"></i>Employee</th>
                             <th><i class="fas fa-exclamation-circle me-1"></i>Issue</th>
@@ -907,11 +902,6 @@
                     <tbody>
                         {% for exception, emp in exceptions %}
                         <tr>
-                            {% if is_admin_logged_in() %}
-                            <td>
-                                <input type="checkbox" name="exception_ids" value="{{ exception.id }}" class="form-check-input exception-checkbox">
-                            </td>
-                            {% endif %}
                             <td><strong>{{ exception.date.strftime('%d %b, %Y') if exception.date else 'N/A' }}</strong></td>
                             <td>{{ emp.name or 'N/A' }}</td>
                             <td>
@@ -960,33 +950,7 @@
             </div>
         </div>
 
-        <!-- Bulk Actions Section -->
-        {% if is_admin_logged_in() and exceptions %}
-        <div class="discrepancy-info">
-            <h5 class="mb-3">
-                <i class="fas fa-tasks me-2"></i>Bulk Actions
-            </h5>
-            <form method="POST" action="{{ url_for('bulk_update_exceptions') }}" id="bulkForm">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label for="bulk_action" class="form-label">Action:</label>
-                        <select class="form-select" id="bulk_action" name="bulk_action" required>
-                            <option value="">Select an action...</option>
-                            <option value="process">Mark as Processed</option>
-                            <option value="resolve">Mark as Resolved</option>
-                            <option value="reopen">Reopen for Review</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary" id="bulkSubmit" disabled>
-                            <i class="fas fa-check me-1"></i>Apply to Selected
-                        </button>
-                        <span class="ms-2 text-muted" id="selectedCount">0 selected</span>
-                    </div>
-                </div>
-            </form>
-        </div>
-        {% endif %}
+
 
         <!-- Mobile-friendly card view for exceptions -->
         <div class="d-md-none mt-4">
@@ -1070,67 +1034,7 @@
             lastScrollTop = scrollTop;
         });
 
-        // Bulk selection functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const exceptionCheckboxes = document.querySelectorAll('.exception-checkbox');
-            const bulkSubmit = document.getElementById('bulkSubmit');
-            const selectedCount = document.getElementById('selectedCount');
 
-            if (selectAllCheckbox) {
-                selectAllCheckbox.addEventListener('change', function() {
-                    exceptionCheckboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
-                    });
-                    updateBulkButton();
-                });
-            }
-
-            exceptionCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    updateBulkButton();
-                    updateSelectAll();
-                });
-            });
-
-            function updateBulkButton() {
-                const checkedBoxes = document.querySelectorAll('.exception-checkbox:checked');
-                const bulkAction = document.getElementById('bulk_action');
-                
-                if (checkedBoxes.length > 0 && bulkAction.value) {
-                    bulkSubmit.disabled = false;
-                } else {
-                    bulkSubmit.disabled = true;
-                }
-                
-                if (selectedCount) {
-                    selectedCount.textContent = `${checkedBoxes.length} selected`;
-                }
-            }
-
-            function updateSelectAll() {
-                const checkedBoxes = document.querySelectorAll('.exception-checkbox:checked');
-                const totalBoxes = exceptionCheckboxes.length;
-                
-                if (selectAllCheckbox) {
-                    if (checkedBoxes.length === 0) {
-                        selectAllCheckbox.indeterminate = false;
-                        selectAllCheckbox.checked = false;
-                    } else if (checkedBoxes.length === totalBoxes) {
-                        selectAllCheckbox.indeterminate = false;
-                        selectAllCheckbox.checked = true;
-                    } else {
-                        selectAllCheckbox.indeterminate = true;
-                    }
-                }
-            }
-
-                    // Update bulk button when action changes
-        const bulkAction = document.getElementById('bulk_action');
-        if (bulkAction) {
-            bulkAction.addEventListener('change', updateBulkButton);
-        }
-    });
 
 
     </script>
