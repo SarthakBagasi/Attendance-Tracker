@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discrepancy Details - Attendance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(44, 62, 80, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #fff !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .navbar-brand i {
+            color: #3498db;
+            margin-right: 0.5rem;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.75rem 1.2rem !important;
+            margin: 0 0.3rem;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .nav-link:hover {
+            color: #fff !important;
+            background: rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-link i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .status-processed {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .status-resolved {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .issue-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .issue-late {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .issue-absent {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .issue-mismatch {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .issue-general {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .btn-custom {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-info-custom {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-warning-custom {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-danger-custom {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-admin {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            color: #fff !important;
+        }
+
+        .btn-admin i {
+            margin-right: 0.5rem;
+        }
+
+        .dropdown-menu {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .dropdown-divider {
+            border-color: rgba(52, 152, 219, 0.2);
+            margin: 0.5rem 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 150px;
+        }
+
+        .detail-value {
+            color: #666;
+            text-align: right;
+        }
+
+        .notes-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .detail-card {
+                padding: 1.5rem;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .detail-value {
+                text-align: left;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-custom {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-clock"></i>
+                Attendance System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/exceptions">
+                            <i class="fas fa-exclamation-triangle"></i>Discrepancies
+                        </a>
+                    </li>
+                </ul>
+                {% if is_admin_logged_in() %}
+                    <div class="dropdown">
+                        <button class="btn btn-admin dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield"></i>Admin
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" href="/admin/employees">
+                                <i class="fas fa-users me-2"></i>Manage Employees
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/admin/logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="/admin/login" class="btn btn-admin">
+                        <i class="fas fa-user-shield"></i>Admin Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="margin-top: 100px;">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-exclamation-triangle me-3"></i>
+                Discrepancy Details
+            </h1>
+            <p class="page-subtitle">
+                Detailed information about the selected discrepancy
+            </p>
+        </div>
+
+        <!-- Detail Card -->
+        <div class="detail-card">
+            <div class="detail-row">
+                <span class="detail-label">Employee:</span>
+                <span class="detail-value">{{ exception[1].name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Employee ID:</span>
+                <span class="detail-value">{{ exception[1].emp_id }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date:</span>
+                <span class="detail-value">{{ exception[0].date.strftime('%d %B, %Y') }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Issue:</span>
+                <span class="detail-value">
+                    {% if 'Late' in exception[0].issue %}
+                        <span class="issue-badge issue-late">{{ exception[0].issue }}</span>
+                    {% elif 'Absent' in exception[0].issue %}
+                        <span class="issue-badge issue-absent">{{ exception[0].issue }}</span>
+                    {% elif 'mismatch' in exception[0].issue %}
+                        <span class="issue-badge issue-mismatch">{{ exception[0].issue }}</span>
+                    {% else %}
+                        <span class="issue-badge issue-general">{{ exception[0].issue }}</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value">
+                    <span class="status-badge status-{{ exception[0].status }}">
+                        {{ exception[0].status.title() }}
+                    </span>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Created:</span>
+                <span class="detail-value">{{ exception[0].created_at.strftime('%d %B, %Y at %H:%M') if exception[0].created_at else 'N/A' }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Last Updated:</span>
+                <span class="detail-value">{{ exception[0].updated_at.strftime('%d %B, %Y at %H:%M') if exception[0].updated_at else 'N/A' }}</span>
+            </div>
+            
+            {% if exception[0].notes %}
+            <div class="notes-section">
+                <h6><i class="fas fa-sticky-note me-2"></i>Notes:</h6>
+                <p class="mb-0">{{ exception[0].notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/exceptions" class="btn-custom btn-info-custom">
+                <i class="fas fa-arrow-left me-2"></i>Back to Discrepancies
+            </a>
+            {% if is_admin_logged_in() %}
+                <button type="button" class="btn-custom btn-warning-custom" data-bs-toggle="modal" data-bs-target="#updateModal">
+                    <i class="fas fa-edit me-2"></i>Update Status
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    {% if is_admin_logged_in() %}
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Discrepancy Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('update_exception', exception_id=exception[0].id) }}" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="action" class="form-label">Action:</label>
+                            <select class="form-select" id="action" name="action" required>
+                                <option value="">Select an action...</option>
+                                <option value="process">Mark as Processed</option>
+                                <option value="resolve">Mark as Resolved</option>
+                                <option value="reopen">Reopen for Review</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes (Optional):</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Add any notes or comments...">{{ exception[0].notes or '' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="text-center py-4 mt-5" style="background: rgba(44, 62, 80, 0.9); color: white;">
+        <div class="container">
+            <p class="mb-0">
+                <i class="fas fa-copyright me-1"></i>
+                                        2025 Attendance & Shift Rota Management System. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

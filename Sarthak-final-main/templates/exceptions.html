@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discrepancy Report - Attendance System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(44, 62, 80, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #fff !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .navbar-brand i {
+            color: #3498db;
+            margin-right: 0.5rem;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.75rem 1.2rem !important;
+            margin: 0 0.3rem;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .nav-link:hover {
+            color: #fff !important;
+            background: rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-link i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-custom {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-info-custom {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-warning-custom {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .exceptions-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .table-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            border: none;
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 1rem;
+        }
+
+        .table td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            padding: 1rem;
+        }
+
+        .issue-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .issue-late {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .issue-absent {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .issue-mismatch {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .issue-general {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .status-processed {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .status-resolved {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+
+
+        .discrepancy-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .info-content h6 {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .info-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile card styles */
+        .card {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Responsive table improvements */
+        .table-responsive {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-custom,
+            .nav-link {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .stat-card,
+            .info-item {
+                cursor: pointer;
+            }
+
+            .table td,
+            .table th {
+                padding: 0.8rem 0.6rem;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.8rem !important;
+                margin: 0 0.1rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.2rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.8rem;
+            }
+
+            .btn-custom {
+                width: 100%;
+                max-width: 280px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .info-item {
+                padding: 0.6rem;
+            }
+
+            .info-icon {
+                font-size: 1.2rem;
+                margin-right: 0.8rem;
+            }
+
+            .exceptions-table {
+                margin: 1rem 0;
+            }
+
+            .table-header {
+                padding: 1rem;
+            }
+
+            .table-header h4 {
+                font-size: 1.1rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            .issue-badge {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .discrepancy-info {
+                padding: 1rem;
+            }
+
+            .discrepancy-info h5 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .page-header {
+                padding: 1rem;
+                margin: 0.5rem 0;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                font-size: 1.8rem;
+            }
+
+            .stat-number {
+                font-size: 1.3rem;
+            }
+
+            .btn-custom {
+                max-width: 100%;
+                font-size: 0.85rem;
+                padding: 8px 16px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 0.8rem;
+            }
+
+            .info-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+                font-size: 1.5rem;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+
+            .issue-badge {
+                padding: 0.2rem 0.6rem;
+                font-size: 0.7rem;
+            }
+
+
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.3rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .stat-card {
+                padding: 0.8rem;
+            }
+
+            .stat-icon {
+                font-size: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 1.2rem;
+            }
+
+            .btn-custom {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+
+            .info-content h6 {
+                font-size: 0.9rem;
+            }
+
+            .info-content p {
+                font-size: 0.8rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.3rem;
+                font-size: 0.75rem;
+            }
+
+            .issue-badge {
+                padding: 0.15rem 0.5rem;
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Landscape orientation for mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .stats-cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .page-header {
+                padding: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .btn-custom {
+                width: auto;
+                max-width: none;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .stat-icon,
+            .info-icon {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .navbar,
+            .action-buttons,
+
+
+            .page-header,
+            .stat-card,
+            .discrepancy-info,
+            .exceptions-table {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+
+            body {
+                background: white !important;
+            }
+        }
+
+        .btn-admin {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            color: #fff !important;
+        }
+
+        .btn-admin i {
+            margin-right: 0.5rem;
+        }
+
+        .dropdown-menu {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .dropdown-divider {
+            border-color: rgba(52, 152, 219, 0.2);
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-clock"></i>
+                Attendance System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/exceptions">
+                            <i class="fas fa-exclamation-triangle"></i>Discrepancies
+                        </a>
+                    </li>
+                </ul>
+                {% if is_admin_logged_in() %}
+                    <div class="dropdown">
+                        <button class="btn btn-admin dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield"></i>Admin
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" href="/admin/employees">
+                                <i class="fas fa-users me-2"></i>Manage Employees
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/admin/logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="/admin/login" class="btn btn-admin">
+                        <i class="fas fa-user-shield"></i>Admin Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" style="margin-top: 100px;">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-exclamation-triangle me-3"></i>
+                Discrepancy Report
+            </h1>
+            <p class="page-subtitle">
+                Current month attendance discrepancies and exceptions with detailed analysis
+            </p>
+            {% if not is_admin_logged_in() %}
+            <div class="alert alert-info mt-3" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Admin Access:</strong> For full administrative features including bulk actions and detailed management, 
+                <a href="/admin/login" class="alert-link">login as admin</a> (Password: admin123)
+                <br><small><a href="/debug-session" class="alert-link">Debug Session Info</a></small>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/export_exceptions_excel" class="btn-custom btn-success-custom">
+                <i class="fas fa-file-excel me-2"></i>Export to Excel
+            </a>
+            <a href="/export_exceptions_pdf" class="btn-custom btn-info-custom">
+                <i class="fas fa-file-pdf me-2"></i>Export to PDF
+            </a>
+            <a href="/process_exceptions" class="btn-custom btn-warning-custom">
+                <i class="fas fa-sync-alt me-2"></i>Process Exceptions
+            </a>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="discrepancy-info">
+            <h5 class="mb-3">
+                <i class="fas fa-filter me-2"></i>Filter Discrepancies
+            </h5>
+            <form method="GET" action="{{ url_for('view_exceptions') }}" class="row g-3">
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="all" {% if current_filters.status == 'all' %}selected{% endif %}>All Statuses</option>
+                        <option value="pending" {% if current_filters.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="processed" {% if current_filters.status == 'processed' %}selected{% endif %}>Processed</option>
+                        <option value="resolved" {% if current_filters.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="employee" class="form-label">Employee:</label>
+                    <select class="form-select" id="employee" name="employee">
+                        <option value="all" {% if current_filters.employee == 'all' %}selected{% endif %}>All Employees</option>
+                        {% for emp in employees %}
+                            <option value="{{ emp.id }}" {% if current_filters.employee == emp.id|string %}selected{% endif %}>{{ emp.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="issue" class="form-label">Issue Type:</label>
+                    <select class="form-select" id="issue" name="issue">
+                        <option value="all" {% if current_filters.issue == 'all' %}selected{% endif %}>All Issues</option>
+                        <option value="Late" {% if current_filters.issue == 'Late' %}selected{% endif %}>Late Arrival</option>
+                        <option value="Absent" {% if current_filters.issue == 'Absent' %}selected{% endif %}>Absent</option>
+                        <option value="mismatch" {% if current_filters.issue == 'mismatch' %}selected{% endif %}>Shift Mismatch</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-search me-1"></i>Filter
+                    </button>
+                    <a href="{{ url_for('view_exceptions') }}" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i>Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <i class="fas fa-exclamation-triangle stat-icon text-danger"></i>
+                <span class="stat-number">{{ exceptions|length }}</span>
+                <div class="stat-label">Total Discrepancies</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock stat-icon text-warning"></i>
+                <span class="stat-number">{{ exceptions|selectattr('0.status', 'equalto', 'pending')|list|length }}</span>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-cog stat-icon text-info"></i>
+                <span class="stat-number">{{ exceptions|selectattr('0.status', 'equalto', 'processed')|list|length }}</span>
+                <div class="stat-label">Processed</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle stat-icon text-success"></i>
+                <span class="stat-number">{{ exceptions|selectattr('0.status', 'equalto', 'resolved')|list|length }}</span>
+                <div class="stat-label">Resolved</div>
+            </div>
+        </div>
+
+        <!-- Discrepancy Information -->
+        <div class="discrepancy-info">
+            <h5 class="mb-3">
+                <i class="fas fa-info-circle me-2"></i>Discrepancy Types
+            </h5>
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fas fa-clock info-icon text-warning"></i>
+                    <div class="info-content">
+                        <h6>Late Arrival</h6>
+                        <p>Employee arrived after scheduled time</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-user-times info-icon text-danger"></i>
+                    <div class="info-content">
+                        <h6>Absent</h6>
+                        <p>No attendance recorded for scheduled shift</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-exchange-alt info-icon text-info"></i>
+                    <div class="info-content">
+                        <h6>Shift Mismatch</h6>
+                        <p>Attendance doesn't match scheduled shift</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-exclamation-circle info-icon text-secondary"></i>
+                    <div class="info-content">
+                        <h6>Other Issues</h6>
+                        <p>Various attendance discrepancies</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exceptions Table -->
+        <div class="exceptions-table">
+            <div class="table-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Detailed Discrepancy Report
+                </h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            {% if is_admin_logged_in() %}
+                            <th>
+                                <input type="checkbox" id="selectAll" class="form-check-input">
+                            </th>
+                            {% endif %}
+                            <th><i class="fas fa-calendar me-1"></i>Date</th>
+                            <th><i class="fas fa-user me-1"></i>Employee</th>
+                            <th><i class="fas fa-exclamation-circle me-1"></i>Issue</th>
+                            <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                            <th class="d-none d-md-table-cell"><i class="fas fa-info-circle me-1"></i>Details</th>
+                            {% if is_admin_logged_in() %}
+                            <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for exception, emp in exceptions %}
+                        <tr>
+                            {% if is_admin_logged_in() %}
+                            <td>
+                                <input type="checkbox" name="exception_ids" value="{{ exception.id }}" class="form-check-input exception-checkbox">
+                            </td>
+                            {% endif %}
+                            <td><strong>{{ exception.date.strftime('%d %b, %Y') if exception.date else 'N/A' }}</strong></td>
+                            <td>{{ emp.name or 'N/A' }}</td>
+                            <td>
+                                {% if 'Late' in exception.issue %}
+                                    <span class="issue-badge issue-late">{{ exception.issue }}</span>
+                                {% elif 'Absent' in exception.issue %}
+                                    <span class="issue-badge issue-absent">{{ exception.issue }}</span>
+                                {% elif 'mismatch' in exception.issue %}
+                                    <span class="issue-badge issue-mismatch">{{ exception.issue }}</span>
+                                {% else %}
+                                    <span class="issue-badge issue-general">{{ exception.issue }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ exception.status }}">
+                                    {{ exception.status.title() }}
+                                </span>
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                {% if 'Late' in exception.issue %}
+                                    <i class="fas fa-clock text-warning"></i> Employee arrived after scheduled shift time
+                                {% elif 'Absent' in exception.issue %}
+                                    <i class="fas fa-user-times text-danger"></i> No attendance record found for scheduled shift
+                                {% elif 'mismatch' in exception.issue %}
+                                    <i class="fas fa-exchange-alt text-info"></i> Attendance status conflicts with scheduled shift
+                                {% else %}
+                                    <i class="fas fa-info-circle text-secondary"></i> General attendance discrepancy detected
+                                {% endif %}
+                            </td>
+                            {% if is_admin_logged_in() %}
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('exception_details', exception_id=exception.id) }}" class="btn btn-sm btn-outline-info" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#updateModal{{ exception.id }}" title="Update Status">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bulk Actions Section -->
+        {% if is_admin_logged_in() and exceptions %}
+        <div class="discrepancy-info">
+            <h5 class="mb-3">
+                <i class="fas fa-tasks me-2"></i>Bulk Actions
+            </h5>
+            <form method="POST" action="{{ url_for('bulk_update_exceptions') }}" id="bulkForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="bulk_action" class="form-label">Action:</label>
+                        <select class="form-select" id="bulk_action" name="bulk_action" required>
+                            <option value="">Select an action...</option>
+                            <option value="process">Mark as Processed</option>
+                            <option value="resolve">Mark as Resolved</option>
+                            <option value="reopen">Reopen for Review</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary" id="bulkSubmit" disabled>
+                            <i class="fas fa-check me-1"></i>Apply to Selected
+                        </button>
+                        <span class="ms-2 text-muted" id="selectedCount">0 selected</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Mobile-friendly card view for exceptions -->
+        <div class="d-md-none mt-4">
+            <div class="row">
+                {% for exception, emp in exceptions %}
+                <div class="col-12 mb-3">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="card-title mb-1">{{ emp.name or 'N/A' }}</h6>
+                                    <small class="text-muted">{{ exception.date.strftime('%d %b, %Y') if exception.date else 'N/A' }}</small>
+                                </div>
+                                <div>
+                                    {% if 'Late' in exception.issue %}
+                                        <span class="issue-badge issue-late">{{ exception.issue }}</span>
+                                    {% elif 'Absent' in exception.issue %}
+                                        <span class="issue-badge issue-absent">{{ exception.issue }}</span>
+                                    {% elif 'mismatch' in exception.issue %}
+                                        <span class="issue-badge issue-mismatch">{{ exception.issue }}</span>
+                                    {% else %}
+                                        <span class="issue-badge issue-general">{{ exception.issue }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-text">
+                                {% if 'Late' in exception.issue %}
+                                    <i class="fas fa-clock text-warning"></i> Employee arrived after scheduled shift time
+                                {% elif 'Absent' in exception.issue %}
+                                    <i class="fas fa-user-times text-danger"></i> No attendance record found for scheduled shift
+                                {% elif 'mismatch' in exception.issue %}
+                                    <i class="fas fa-exchange-alt text-info"></i> Attendance status conflicts with scheduled shift
+                                {% else %}
+                                    <i class="fas fa-info-circle text-secondary"></i> General attendance discrepancy detected
+                                {% endif %}
+                            </div>
+                            <div class="mt-2">
+                                <span class="status-badge status-{{ exception.status }}">
+                                    {{ exception.status.title() }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 mt-5" style="background: rgba(44, 62, 80, 0.9); color: white;">
+        <div class="container">
+            <p class="mb-0">
+                <i class="fas fa-copyright me-1"></i>
+                                        2025 Attendance & Shift Rota Management System. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll functionality
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down - hide navbar
+                navbar.style.transform = 'translateY(-100%)';
+                navbar.style.transition = 'transform 0.3s ease-in-out';
+            } else {
+                // Scrolling up - show navbar
+                navbar.style.transform = 'translateY(0)';
+                navbar.style.transition = 'transform 0.3s ease-in-out';
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // Bulk selection functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const exceptionCheckboxes = document.querySelectorAll('.exception-checkbox');
+            const bulkSubmit = document.getElementById('bulkSubmit');
+            const selectedCount = document.getElementById('selectedCount');
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    exceptionCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    updateBulkButton();
+                });
+            }
+
+            exceptionCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateBulkButton();
+                    updateSelectAll();
+                });
+            });
+
+            function updateBulkButton() {
+                const checkedBoxes = document.querySelectorAll('.exception-checkbox:checked');
+                const bulkAction = document.getElementById('bulk_action');
+                
+                if (checkedBoxes.length > 0 && bulkAction.value) {
+                    bulkSubmit.disabled = false;
+                } else {
+                    bulkSubmit.disabled = true;
+                }
+                
+                if (selectedCount) {
+                    selectedCount.textContent = `${checkedBoxes.length} selected`;
+                }
+            }
+
+            function updateSelectAll() {
+                const checkedBoxes = document.querySelectorAll('.exception-checkbox:checked');
+                const totalBoxes = exceptionCheckboxes.length;
+                
+                if (selectAllCheckbox) {
+                    if (checkedBoxes.length === 0) {
+                        selectAllCheckbox.indeterminate = false;
+                        selectAllCheckbox.checked = false;
+                    } else if (checkedBoxes.length === totalBoxes) {
+                        selectAllCheckbox.indeterminate = false;
+                        selectAllCheckbox.checked = true;
+                    } else {
+                        selectAllCheckbox.indeterminate = true;
+                    }
+                }
+            }
+
+                    // Update bulk button when action changes
+        const bulkAction = document.getElementById('bulk_action');
+        if (bulkAction) {
+            bulkAction.addEventListener('change', updateBulkButton);
+        }
+    });
+
+
+    </script>
+
+    <!-- Individual Update Modals -->
+    {% if is_admin_logged_in() %}
+    {% for exception, emp in exceptions %}
+    <div class="modal fade" id="updateModal{{ exception.id }}" tabindex="-1" aria-labelledby="updateModalLabel{{ exception.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel{{ exception.id }}">Update Discrepancy Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('update_exception', exception_id=exception.id) }}" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Employee:</label>
+                            <p class="form-control-plaintext">{{ emp.name }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date:</label>
+                            <p class="form-control-plaintext">{{ exception.date.strftime('%d %B, %Y') }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Issue:</label>
+                            <p class="form-control-plaintext">{{ exception.issue }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action{{ exception.id }}" class="form-label">Action:</label>
+                            <select class="form-select" id="action{{ exception.id }}" name="action" required>
+                                <option value="">Select an action...</option>
+                                <option value="process">Mark as Processed</option>
+                                <option value="resolve">Mark as Resolved</option>
+                                <option value="reopen">Reopen for Review</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes{{ exception.id }}" class="form-label">Notes (Optional):</label>
+                            <textarea class="form-control" id="notes{{ exception.id }}" name="notes" rows="3" placeholder="Add any notes or comments...">{{ exception.notes or '' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</body>
+</html> 
