@@ -643,9 +643,14 @@ def export_reports_pdf():
     <html>
     <head>
         <style>
+            @page {{
+                size: A4 landscape;
+                margin: 1.5cm;
+            }}
+            
             body {{ 
                 font-family: Arial, sans-serif;
-                margin: 2cm;
+                margin: 0;
                 padding: 0;
                 background-color: white;
                 color: #333;
@@ -676,24 +681,27 @@ def export_reports_pdf():
                 width: 100%; 
                 border-collapse: collapse; 
                 margin-top: 15px;
-                font-size: 10pt;
+                font-size: 9pt;
+                table-layout: fixed;
             }}
             
             th {{ 
                 background-color: #f0f0f0;
                 color: #333; 
                 font-weight: bold;
-                font-size: 10pt;
-                padding: 8px 6px;
+                font-size: 9pt;
+                padding: 6px 3px;
                 text-align: center;
                 border: 1px solid #333;
+                word-wrap: break-word;
             }}
             
             td {{ 
-                padding: 6px 4px;
+                padding: 5px 3px;
                 text-align: center;
                 border: 1px solid #ccc;
                 vertical-align: middle;
+                word-wrap: break-word;
             }}
             
             tr:nth-child(even) {{
@@ -703,6 +711,7 @@ def export_reports_pdf():
             .employee-name {{
                 font-weight: bold;
                 text-align: left;
+                width: 20%;
             }}
             
             .footer-section {{
@@ -731,15 +740,15 @@ def export_reports_pdf():
         <table>
             <thead>
                 <tr>
-                    <th>Employee Name</th>
-                    <th>Present</th>
-                    <th>Off</th>
-                    <th>Leave</th>
-                    <th>Absent</th>
-                    <th>Late</th>
-                    <th>Early Leave</th>
-                    <th>On Duty</th>
-                    <th>Attendance %</th>
+                    <th style="width: 20%;">Employee Name</th>
+                    <th style="width: 10%;">Present</th>
+                    <th style="width: 10%;">Off</th>
+                    <th style="width: 10%;">Leave</th>
+                    <th style="width: 10%;">Absent</th>
+                    <th style="width: 10%;">Late</th>
+                    <th style="width: 12%;">Early Leave</th>
+                    <th style="width: 10%;">On Duty</th>
+                    <th style="width: 8%;">Attendance %</th>
                 </tr>
             </thead>
             <tbody>
